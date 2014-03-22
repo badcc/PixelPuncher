@@ -147,34 +147,13 @@ public class Character extends Actor {
 		if (isColliding(blocks)) {
 			velocity.x = 0;
 		}
-//		if (state != State.JUMPING && (velocity.x < -1 || velocity.x > 1) && isGrounded)
-//			state = State.WALKING;
-//		
-//		if (isGrounded && velocity.x > -1 && velocity.x < 1)
-//			state = State.IDLE;
-//		
-//		if (!isGrounded)
-//			state = State.FALLING;
-		
-		
-//		if (isGrounded && (velocity.x < -1 || velocity.x > 1) && velocity.y == 0 && state != State.FALLING && state != State.JUMPING)
-//			state = State.WALKING;
-//		if (isGrounded && state != State.JUMPING && state != State.WALKING && (velocity.x > -1 || velocity.x < 1) && velocity.y == 0)
-//			state = State.IDLE;
-//		if (!isGrounded && (state == State.JUMPING && velocity.y < 0) || (state == State.WALKING && velocity.y != 0))
-//			state = State.FALLING;
-		
+
 		if (!isGrounded && state != State.FALLING && state != State.IDLE && velocity.y < 0)
 			state = State.FALLING;
 		if (isGrounded && (state == State.FALLING || state == State.WALKING) && (velocity.x > -1 && velocity.x < 1))
 			state = State.IDLE;
 		if (isGrounded && (state == State.IDLE || state == State.FALLING) && (velocity.x < -1 || velocity.x > 1))
 			state = State.WALKING;
-		
-		Gdx.app.log("state", state + " < > " + isGrounded + " | " + velocity.y);
-		
-//		if (state != State.WALKING && state != State.JUMPING && state != State.FALLING && !isGrounded)
-//			hitGround.play(0.4f);
 		
 		setStateTexture();
 		position.add(velocity.cpy().scl(delta));
@@ -184,14 +163,6 @@ public class Character extends Actor {
 		if (position.y < -5*5)
 			position = new Vector2(0, 60);
 		
-		/*
-		 * IDLE, WALKING, JUMPING, FALLING
-		 * 
-		 * WALKING if tilted and grounded not JUMPING, FALLING
-		 * FALLING if not grounded, WALKING
-		 * IDLE if grounded not WALKING, JUMPING, FALLING
-		 * not grounded if JUMPING, FALLING
-		 */
 	}
 	@Override
 	public void draw(SpriteBatch batch, float alpha) {
