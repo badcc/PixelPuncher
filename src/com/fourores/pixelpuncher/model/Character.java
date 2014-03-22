@@ -120,7 +120,7 @@ public class Character extends Actor {
 			movingRight = true;
 		
 		velocity.add(0, GRAVITY);
-		if (Gdx.input.isTouched() && (isGrounded || System.currentTimeMillis() - jumpStart < LONG_JUMP_TIME)) {
+		if (Gdx.input.isTouched() && (velocity.y == GRAVITY || System.currentTimeMillis() - jumpStart < LONG_JUMP_TIME)) {
 			velocity.y = Character.JUMP_VELOCITY;
 			state = State.JUMPING;
 			isGrounded = false;
@@ -135,12 +135,12 @@ public class Character extends Actor {
 		Array<Block> blocks;
 		blocks = world.getBlocksInRegion(position.x - 2, position.x + 6, bounds.y - 5f * texRatio, bounds.y + 5f * texRatio);
 		if (isColliding(blocks)){
-			if (!isGrounded && state != State.JUMPING && state != State.WALKING){
+			if (velocity.y == GRAVITY && state == State.FALLING && state != State.JUMPING && state != State.WALKING){
 				isGrounded = true;
 				hitGround.play(0.4f);
 			}
 			velocity.y = 0;
-		} else if (state == State.JUMPING || state == State.FALLING ) {
+		} else if ((state == State.JUMPING || state == State.FALLING) && velocity.y < 0) {
 			isGrounded = false;
 		}
 		blocks = world.getBlocksInRegion(bounds.x - 5, bounds.x + 9, bounds.y - 2, bounds.y + 5f * texRatio);
@@ -148,12 +148,28 @@ public class Character extends Actor {
 			velocity.x = 0;
 		}
 
-		if (!isGrounded && state != State.FALLING && state != State.IDLE && velocity.y < 0)
+//		if (state != State.FALLING && state != State.IDLE)
+//			state = State.FALLING;
+//		if (velocity.y == 0 && (state == State.IDLE || state == State.FALLING) && (velocity.x < -1 || velocity.x > 1))
+//			state = State.WALKING;
+//		if (velocity.y == 0 && (state == State.FALLING || state == State.WALKING) && (velocity.x > -1 && velocity.x < 1))
+//			state = State.IDLE;
+		
+		if (velocity.y < 0) {
 			state = State.FALLING;
-		if (isGrounded && (state == State.FALLING || state == State.WALKING) && (velocity.x > -1 && velocity.x < 1))
-			state = State.IDLE;
-		if (isGrounded && (state == State.IDLE || state == State.FALLING) && (velocity.x < -1 || velocity.x > 1))
-			state = State.WALKING;
+		} else if (velocity.y == 0) {
+			if (state != State.JUMPING) {
+				if (velocity.x < -1 || velocity.x > 1) {
+					state = State.WALKING;
+				} else if (velocity.x > -1 && velocity.x < 1) {
+					state = State.IDLE;
+				}
+			}
+		}
+		
+		
+		Gdx.app.log("state", state + " < > " + isGrounded + " | " + velocity.y);
+	
 		
 		setStateTexture();
 		position.add(velocity.cpy().scl(delta));
@@ -170,12 +186,12 @@ public class Character extends Actor {
 		batch.draw(regionToDraw, position.x, position.y, 4f, 4f * texRatio);
 		batch.end();
 		
-//		debugCollide();
-//		debugR.setProjectionMatrix(camera.combined);
-//		debugR.begin(ShapeType.Line);
-//		debugR.setColor(Color.BLUE);
-//		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-//		debugR.end();
+		debugCollide();
+		debugR.setProjectionMatrix(camera.combined);
+		debugR.begin(ShapeType.Line);
+		debugR.setColor(Color.BLUE);
+		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+		debugR.end();
 		
 		batch.begin();
 	}
