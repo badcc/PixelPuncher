@@ -1,6 +1,7 @@
 package com.fourores.pixelpuncher.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -11,14 +12,17 @@ public class World {
 	public Array<Block> blocks = new Array<Block>();
 	public Block[][] worldBlocks = new Block[0][0];
 	public ArrayMap<Long, Chunk> chunks = new ArrayMap<Long, Chunk>();
+	public Array<Chunk> chunksLoaded = new Array<Chunk>();
+	
 	private Stage stage;
+	private Camera camera;
 	public World(Stage stage) {
 		this.stage = stage;
+		camera = stage.getCamera();
 	}
 	public static long toLong(int msw, int lsw) {
         return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
     }
-	
 	public void create(Stage stage) {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -42,9 +46,24 @@ public class World {
 		for (int x = 40 / 5; x < 90 / 5; x++) {
 			setBlockAt(x, 1);
 		}
+		
+		for (int x = 95 / 5; x < 190 / 5; x++) {
+			for (int y = 1; y < 10; y+=2) {
+				if ((x + y) % 3 == 0)
+					setBlockAt(x, y);
+			}
+		}
 	}
 	public Chunk getChunkAt(int x, int y) {
 		return chunks.get(toLong((int)Math.ceil(x / 16) - 1, (int)Math.ceil(y / 16) - 1));
+	}
+	public Chunk getChunkAt(Vector2 position) {
+		return getChunkAt((int)position.x, (int)position.y);
+	}
+	public Array<Chunk> getSurroundingChunks(Chunk chunk) {
+		Array<Chunk> chunks = new Array<Chunk>();
+		chunks.add(chunk);
+		return null;
 	}
 	public Block getBlockAt(int x, int y) {
 		Chunk chunk = getChunkAt(x, y);
@@ -61,6 +80,7 @@ public class World {
 		}
 		chunk.setBlockAt(x, y, material);
 	}
+	
 	public void setBlockAt(int x, int y) {
 		setBlockAt(x, y, Material.STONE);
 	}
@@ -70,9 +90,18 @@ public class World {
 	public Vector2 screenToWorld(float x, float y) {
 		return new Vector2((float)Math.round(x / 5), (float)Math.round(y / 5));
 	}
+	
+	public Vector2 blockToScreen(Vector2 vector) {
+//		return new Vector2((float)Math.floor(vector.x / 5), (float)Math.floor(vector.y / 5));
+		return vector.scl(5);
+	}
+	public Vector2 screenToBlock(Vector2 vector) {
+		Vector2 newVector = vector.div(5);
+		return new Vector2((float)Math.round(newVector.x), (float)Math.round(newVector.y));
+	}
 	public Array<Block> getBlocksInRegion(float startX, float endX, float startY, float endY) {
-		Vector2 start = screenToWorld(startX, startY);
-		Vector2 end = screenToWorld(endX, endY);
+		Vector2 start = screenToBlock(new Vector2(startX, startY));
+		Vector2 end = screenToBlock(new Vector2(endX, endY));
 		Array<Block> retArray = new Array<Block>();
 		for (float x = start.x; x < end.x; x++) {
 			for (float y = start.y; y < end.y; y++) {
@@ -82,49 +111,16 @@ public class World {
 				}
 			}
 		}
-//		for (Block block : blocks) {
-//			if (startX == endX) {
-//				if (block.position.y > startY &&
-//						block.position.y < endY) {
-//					retArray.add(block);
-//				}
-//			}else if (startY == endY) {
-//				if (block.position.x > startX &&
-//						block.position.x < endX) {
-//					retArray.add(block);
-//				}
-//			}else {
-//				if (block.position.x > startX  &&
-//						block.position.x < endX &&
-//						block.position.y > startY &&
-//						block.position.y < endY) {
-//					retArray.add(block);
-//				}
-//			}
-//		}
 		return retArray;
 	}
 	public void render() {
-//		Camera camera = stage.getCamera();
-//		ArrayList<Chunk> chunksVisible = new ArrayList<Chunk>();
-//		for (int x = (int) camera.position.x; x < (int) camera.position.x + camera.viewportWidth; x+=5) {
-//			for (int y = (int) camera.position.y; y < (int) camera.position.y + camera.viewportHeight; y+=5) {
-//				Chunk chunk = getChunkAt((int)screenToWorld(x), (int)screenToWorld(y));
-//				if (chunk != null) {
-//					if (chunksVisible.indexOf(chunk) == -1) {
-//						chunksVisible.add(chunk);
-//					}
-//				}
-//			}
-//		}
-//		
-//		for (Chunk chunk : chunksVisible) {
+		Chunk chunk = getChunkAt(screenToWorld(camera.position.x, camera.position.y));
+		if (chunk != null)
+			chunk.render();
+//		for (int i = 0; i < chunks.size; i++) {
+//			Chunk chunk = chunks.getValueAt(i);
 //			chunk.render();
 //		}
-		for (int i = 0; i < chunks.size; i++) {
-			Chunk chunk = chunks.getValueAt(i);
-			chunk.render();
-		}
 	}
 	
 }

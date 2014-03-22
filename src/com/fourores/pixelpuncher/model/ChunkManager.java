@@ -1,5 +1,8 @@
 package com.fourores.pixelpuncher.model;
 
-public class ChunkManager {
+import com.badlogic.gdx.utils.ArrayMap;
+import com.fourores.pixelpuncher.model.Block.Material;
 
+public class ChunkManager {
+	
 }

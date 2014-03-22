@@ -76,6 +76,9 @@ public class Block {
 	public Chunk getChunk() {
 		return chunk;
 	}
+	public Vector2 getPosition() {
+		return position;
+	}
 	public void render(SpriteBatch batch) {
 		bounds.x = position.x;
 		bounds.y = position.y;
