@@ -2,8 +2,8 @@ package com.fourores.pixelpuncher.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
@@ -49,7 +48,7 @@ public class Character extends Actor {
 	public Character(World world, Camera camera) {
 		this.world = world;
 		this.camera = camera;
-		position = new Vector2(0, 60);
+		position = new Vector2(0, 25*5);
 		velocity = new Vector2();
 		
 		jumpSounds = new Sound[3];
@@ -85,13 +84,13 @@ public class Character extends Actor {
 			break;
 		}
 	}
-	public boolean isColliding(Array<Block> blocks) {
+	public Block isColliding(Array<Block> blocks) {
 		for (Block block : blocks) {
 			if (block.bounds.overlaps(bounds)) {
-				return true;
+				return block;
 			}
 		}
-		return false;
+		return null;
 	}
 	public void debugCollide() {
 		Array<Block> blocks = world.getBlocksInRegion(position.x - 1, position.x + 5, bounds.y - 5f * texRatio, bounds.y + 5f * texRatio);
@@ -120,7 +119,7 @@ public class Character extends Actor {
 			movingRight = true;
 		
 		velocity.add(0, GRAVITY);
-		if (Gdx.input.isTouched() && (velocity.y == GRAVITY || System.currentTimeMillis() - jumpStart < LONG_JUMP_TIME)) {
+		if (Gdx.input.isTouched() && (isGrounded || System.currentTimeMillis() - jumpStart < LONG_JUMP_TIME)) {
 			velocity.y = Character.JUMP_VELOCITY;
 			state = State.JUMPING;
 			isGrounded = false;
@@ -134,29 +133,25 @@ public class Character extends Actor {
 		bounds.y = position.y + (velocity.y * delta);
 		Array<Block> blocks;
 		blocks = world.getBlocksInRegion(position.x - 2, position.x + 6, bounds.y - 5f * texRatio, bounds.y + 5f * texRatio);
-		if (isColliding(blocks)){
-			if (velocity.y == GRAVITY && state == State.FALLING && state != State.JUMPING && state != State.WALKING){
+		Block collisionBlock = isColliding(blocks);
+		if (collisionBlock != null){
+			if (!isGrounded && state != State.JUMPING){
 				isGrounded = true;
 				hitGround.play(0.4f);
 			}
 			velocity.y = 0;
-		} else if ((state == State.JUMPING || state == State.FALLING) && velocity.y < 0) {
-			isGrounded = false;
+			if (state == State.FALLING)
+				position.y = collisionBlock.getOppositeCorner().y;
+//		} else if ((state == State.JUMPING || state == State.FALLING) && velocity.y < 0) {
+//			isGrounded = false;
 		}
 		blocks = world.getBlocksInRegion(bounds.x - 5, bounds.x + 9, bounds.y - 2, bounds.y + 5f * texRatio);
-		if (isColliding(blocks)) {
+		if (isColliding(blocks) != null) {
 			velocity.x = 0;
 		}
-
-//		if (state != State.FALLING && state != State.IDLE)
-//			state = State.FALLING;
-//		if (velocity.y == 0 && (state == State.IDLE || state == State.FALLING) && (velocity.x < -1 || velocity.x > 1))
-//			state = State.WALKING;
-//		if (velocity.y == 0 && (state == State.FALLING || state == State.WALKING) && (velocity.x > -1 && velocity.x < 1))
-//			state = State.IDLE;
-		
 		if (velocity.y < 0) {
 			state = State.FALLING;
+			isGrounded = false;
 		} else if (velocity.y == 0) {
 			if (state != State.JUMPING) {
 				if (velocity.x < -1 || velocity.x > 1) {
@@ -167,10 +162,6 @@ public class Character extends Actor {
 			}
 		}
 		
-		
-		Gdx.app.log("state", state + " < > " + isGrounded + " | " + velocity.y);
-	
-		
 		setStateTexture();
 		position.add(velocity.cpy().scl(delta));
 		camera.position.x = position.x;
@@ -178,7 +169,6 @@ public class Character extends Actor {
 		
 		if (position.y < -5*5)
 			position = new Vector2(0, 60);
-		
 	}
 	@Override
 	public void draw(SpriteBatch batch, float alpha) {
@@ -186,12 +176,12 @@ public class Character extends Actor {
 		batch.draw(regionToDraw, position.x, position.y, 4f, 4f * texRatio);
 		batch.end();
 		
-		debugCollide();
-		debugR.setProjectionMatrix(camera.combined);
-		debugR.begin(ShapeType.Line);
-		debugR.setColor(Color.BLUE);
-		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-		debugR.end();
+//		debugCollide();
+//		debugR.setProjectionMatrix(camera.combined);
+//		debugR.begin(ShapeType.Line);
+//		debugR.setColor(Color.BLUE);
+//		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+//		debugR.end();
 		
 		batch.begin();
 	}

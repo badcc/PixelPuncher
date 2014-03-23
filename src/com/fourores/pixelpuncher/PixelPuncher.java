@@ -14,7 +14,6 @@ public class PixelPuncher implements ApplicationListener {
 	private Character character;
 	private World world;
 	private Stage stage;
-	
 	@Override
 	public void create() {		
 		float w = Gdx.graphics.getWidth();
@@ -45,7 +44,6 @@ public class PixelPuncher implements ApplicationListener {
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		float delta = Gdx.graphics.getDeltaTime();
-		
 		character.update(delta);
 		
 		stage.draw();
