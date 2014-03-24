@@ -25,7 +25,6 @@ public class TestGenerator extends Generator {
 		for (int x = 0; x < 16; x++){
 			float pos = (chunkX * 16 + x);
 			float y = (float) (Math.abs(Math.sin(pos / 15) * 10));
-			Gdx.app.log("y", "y: " + y);
 			chunk.setBlockAt((int)pos, (int)y, Material.STONE_MOSSY);
 			chunk.setBlockAt((int)pos, (int)y-1, Material.STONE_CARVED);
 			for (int y2 = 0; y2 < y-2; y2++)
