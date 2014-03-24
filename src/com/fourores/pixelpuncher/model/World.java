@@ -19,34 +19,6 @@ public class World {
 	public static long toLong(int msw, int lsw) {
         return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
     }
-	public void create(Stage stage) {
-//		setBlockAt(0, 0);
-//		setBlockAt(0, 1, Material.STONE_CRACKED);
-//		setBlockAt(0, 2, Material.STONE_CARVED);
-//		setBlockAt(0, 3, Material.STONE_MOSSY);
-//		setBlockAt(0, 4, Material.STONE_COMPACT);
-//		setBlockAt(0, 5);
-//		
-//		for (int x = 1; x < 100 / 5; x++) {
-//			setBlockAt(x, 0);
-//		}
-//		for (int x = 30 / 5; x < 100 / 5; x++) {
-//			setBlockAt(x, 4);
-//		}
-//		for (int x = 1; x < 25 / 5; x++) {
-//			setBlockAt(x, 5);
-//		}
-//		for (int x = 40 / 5; x < 90 / 5; x++) {
-//			setBlockAt(x, 1);
-//		}
-//		for (int x = 90 / 5; x < 300; x++) {
-//			setBlockAt(x, 1);
-//		}
-	}
-//	public Chunk getChunkAt(int x, int y) {
-//		Vector2 chunkLocation = new Vector2((int)Math.ceil(x / 16) - 1, (int)Math.ceil(y / 16) - 1);
-//		return chunks.get(toLong((int)chunkLocation.x, (int)chunkLocation.y));
-//	}
 	public Chunk getChunkAt(int x, int y) {
 		return worldGenerator.getChunkAt(worldGenerator.posToChunkPos(x,  y));
 	}
@@ -90,17 +62,6 @@ public class World {
 		
 		return chunks;
 	}
-//	public void setBlockAt(int x, int y, Material material) {
-//		Chunk chunk = getChunkAt(x, y);
-//		if (chunk == null) {
-//			chunk = new Chunk(stage);
-//			chunks.put(toLong((int)Math.ceil(x / 16) - 1, (int)Math.ceil(y / 16) - 1), chunk);
-//		}
-//		chunk.setBlockAt(x, y, material);
-//	}
-//	public void setBlockAt(int x, int y) {
-//		setBlockAt(x, y, Material.STONE);
-//	}
 	public float screenToWorld(float i) {
 		return Math.round(i / 5);
 	}

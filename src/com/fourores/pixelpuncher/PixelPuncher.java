@@ -24,7 +24,6 @@ public class PixelPuncher implements ApplicationListener {
 		stage = new Stage(100, 100 * h/w, true);
 		camera = stage.getCamera();
 		world = new World(stage);
-		world.create(stage);
 		
 		character = new Character(world, camera);
 		stage.addActor(character);
