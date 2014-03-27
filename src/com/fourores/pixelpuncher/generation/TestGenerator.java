@@ -13,19 +13,21 @@ public class TestGenerator extends Generator {
 	public ArrayMap<Long, Chunk> chunks = new ArrayMap<Long, Chunk>();
 	public SpriteBatch batch;
 	private Random random; // Seed - manual for now.
+	private int seed;
 	public TestGenerator(SpriteBatch batch) {
 		this.batch = batch;
 		random = new Random();
+		seed = random.nextInt();
 	}
 	public long toLong(int msw, int lsw) {
         return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
     }
 	private int[][] getEmptyCellArray(int chunkX, int chunkY) {
-		random.setSeed(toLong(chunkX, chunkY));
+		random.setSeed(toLong(chunkX, chunkY) + seed);
 		int[][] cells = new int[16][16];
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
-				boolean on = random.nextFloat() < 0.60f;
+				boolean on = random.nextFloat() < 0.55f;
 				
 				cells[x][y] = on ? 1 : 0;
 			}

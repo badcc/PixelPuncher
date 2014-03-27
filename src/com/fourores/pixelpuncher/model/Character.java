@@ -22,7 +22,7 @@ public class Character extends Actor {
 	public Vector2 position;
 	public Vector2 velocity;
 	public static long LONG_JUMP_TIME = 250l;
-	public static float MAX_VELOCITY = 15f;
+	public static float MAX_VELOCITY = 14f;
 	public static float JUMP_VELOCITY = 98.1f * 0.75f;
 	public static float GRAVITY = -9.81f * 0.5f;
 	public static float DAMPING = 0.75f;
@@ -49,10 +49,13 @@ public class Character extends Actor {
 	public Character(World world, OrthographicCamera camera) {
 		this.world = world;
 		this.camera = camera;
-		position = new Vector2(0, 25*5);
+		position = new Vector2(0, 900*5);
 		velocity = new Vector2();
 		
 		jumpSounds = new Sound[3];
+//		jumpSounds[0] = Gdx.audio.newSound(Gdx.files.internal("data/jump0.wav"));
+//		jumpSounds[1] = Gdx.audio.newSound(Gdx.files.internal("data/jump1.wav"));
+//		jumpSounds[2] = Gdx.audio.newSound(Gdx.files.internal("data/jump2.wav"));
 		jumpSounds[0] = Gdx.audio.newSound(Gdx.files.internal("data/jump0.wav"));
 		jumpSounds[1] = Gdx.audio.newSound(Gdx.files.internal("data/jump1.wav"));
 		jumpSounds[2] = Gdx.audio.newSound(Gdx.files.internal("data/jump2.wav"));
@@ -126,7 +129,7 @@ public class Character extends Actor {
 			isGrounded = false;
 			if (System.currentTimeMillis() - jumpStart > LONG_JUMP_TIME){
 				jumpStart = System.currentTimeMillis();
-				jumpSounds[(int) (Math.random() * jumpSounds.length)].play(0.5f);
+				jumpSounds[(int) (Math.random() * jumpSounds.length)].play(0.35f);
 			}
 		}
 		

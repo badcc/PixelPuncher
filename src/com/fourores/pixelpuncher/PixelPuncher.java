@@ -20,7 +20,7 @@ public class PixelPuncher implements ApplicationListener {
 	private Character character;
 	private World world;
 	private SpriteBatch batch;
-	private float ambientIntensity = 0.35f;
+	private float ambientIntensity = 0.45f;
 	private Vector3 ambientColor = new Vector3(0.3f, 0.3f, 0.5f);
 	
 	private FrameBuffer fbo;
@@ -116,7 +116,7 @@ public class PixelPuncher implements ApplicationListener {
 		batch.enableBlending();
 //		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		fbo.begin();
-		float lightSize = (float) Math.sin(Math.floor(System.currentTimeMillis() * 500) / 50000) * 5 + 50;
+		float lightSize = (float) Math.sin(Math.floor(System.currentTimeMillis() * 500) / 100000) * 4 + 55;
 		batch.draw(light, character.position.x - (lightSize / 2) + 2, character.position.y - (lightSize / 2) + 4, lightSize, lightSize);
 		fbo.getColorBufferTexture().bind(1);
 		fbo.end();
