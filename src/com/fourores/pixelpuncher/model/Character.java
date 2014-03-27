@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -39,13 +40,13 @@ public class Character extends Actor {
 	public State state = State.IDLE;
 	public long jumpStart = 0;
 	private World world;
-	private Camera camera;
+	private OrthographicCamera camera;
 	private boolean movingRight = false;
 	private boolean walkingTextureRight = true;
 	private Sound[] jumpSounds;
 	private Sound hitGround;
 	private float texRatio;
-	public Character(World world, Camera camera) {
+	public Character(World world, OrthographicCamera camera) {
 		this.world = world;
 		this.camera = camera;
 		position = new Vector2(0, 25*5);
@@ -164,26 +165,30 @@ public class Character extends Actor {
 		
 		setStateTexture();
 		position.add(velocity.cpy().scl(delta));
-		camera.position.x = position.x;
-		camera.position.y = position.y;
+
+		camera.position.set(position.x, position.y, 0);
+		camera.update();
 		
-		if (position.y < -5*5)
-			position = new Vector2(0, 60);
+//		if (position.y < -5*5)
+//			position = new Vector2(0, 60);
 	}
-	@Override
-	public void draw(SpriteBatch batch, float alpha) {
-		
+//	@Override
+//	public void draw(SpriteBatch batch, float alpha) {
+//		
+//		batch.draw(regionToDraw, position.x, position.y, 4f, 4f * texRatio);
+//		batch.end();
+//		
+////		debugCollide();
+////		debugR.setProjectionMatrix(camera.combined);
+////		debugR.begin(ShapeType.Line);
+////		debugR.setColor(Color.BLUE);
+////		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+////		debugR.end();
+//		
+//		batch.begin();
+//	}
+	public void render(SpriteBatch batch) {
 		batch.draw(regionToDraw, position.x, position.y, 4f, 4f * texRatio);
-		batch.end();
-		
-//		debugCollide();
-//		debugR.setProjectionMatrix(camera.combined);
-//		debugR.begin(ShapeType.Line);
-//		debugR.setColor(Color.BLUE);
-//		debugR.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-//		debugR.end();
-		
-		batch.begin();
 	}
 	
 }

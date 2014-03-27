@@ -1,6 +1,8 @@
 package com.fourores.pixelpuncher.model;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -10,11 +12,11 @@ import com.fourores.pixelpuncher.generation.TestGenerator;
 public class World {
 //	public ArrayMap<Long, Chunk> chunks = new ArrayMap<Long, Chunk>();
 	
-	private Camera camera;
+	private OrthographicCamera camera;
 	public Generator worldGenerator;
-	public World(Stage stage) {
-		camera = stage.getCamera();
-		worldGenerator = new TestGenerator(stage.getSpriteBatch());
+	public World(OrthographicCamera camera, SpriteBatch batch) {
+		this.camera = camera;
+		worldGenerator = new TestGenerator(batch);
 	}
 	public static long toLong(int msw, int lsw) {
         return ((long) msw << 32) + lsw - Integer.MIN_VALUE;
@@ -76,8 +78,8 @@ public class World {
 		return new Vector2((float)Math.round(newVector.x), (float)Math.round(newVector.y));
 	}
 	public Array<Block> getBlocksInRegion(float startX, float endX, float startY, float endY) {
-		Vector2 start = screenToBlock(new Vector2(startX, startY));
-		Vector2 end = screenToBlock(new Vector2(endX, endY));
+		Vector2 start = screenToWorld(startX, startY);
+		Vector2 end = screenToWorld(endX, endY);
 		Array<Block> retArray = new Array<Block>();
 		for (float x = start.x; x < end.x; x++) {
 			for (float y = start.y; y < end.y; y++) {
@@ -89,12 +91,12 @@ public class World {
 		}
 		return retArray;
 	}
-	public void render() {
+	public void render(SpriteBatch batch) {
 		Chunk chunk = getChunkAt(screenToWorld(camera.position.x, camera.position.y));
 //		chunk.render();
 		Array<Chunk> chunksToRender = getSurroundingChunks(chunk);
 		for (Chunk chunkToRender : chunksToRender)
-			chunkToRender.render();
+			chunkToRender.render(batch);
 	}
 	
 }

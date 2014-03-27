@@ -1,6 +1,5 @@
 package com.fourores.pixelpuncher.generation;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.fourores.pixelpuncher.model.Chunk;
 
@@ -17,8 +16,11 @@ public abstract class Generator {
 		float newX = x / 16;
 		float newY = y / 16;
 		Vector2 retVec = new Vector2(newX, newY);
-		if (newX < -1){
+		if (newX <= 0){
 			retVec.x = (float)Math.floor(newX);
+		}
+		if (newY <= 0) {
+			retVec.y = (float)Math.floor(newY);
 		}
 //		if (newY < 0)
 //			retVec.y = (float)Math.floor(newY);
