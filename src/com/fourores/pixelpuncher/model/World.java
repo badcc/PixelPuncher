@@ -78,8 +78,8 @@ public class World {
 		return new Vector2((float)Math.round(newVector.x), (float)Math.round(newVector.y));
 	}
 	public Array<Block> getBlocksInRegion(float startX, float endX, float startY, float endY) {
-		Vector2 start = screenToWorld(startX, startY);
-		Vector2 end = screenToWorld(endX, endY);
+		Vector2 start = screenToBlock(new Vector2(startX, startY));
+		Vector2 end = screenToBlock(new Vector2(endX, endY));
 		Array<Block> retArray = new Array<Block>();
 		for (float x = start.x; x < end.x; x++) {
 			for (float y = start.y; y < end.y; y++) {
