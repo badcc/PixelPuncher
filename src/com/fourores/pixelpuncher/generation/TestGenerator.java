@@ -27,7 +27,7 @@ public class TestGenerator extends Generator {
 		int[][] cells = new int[16][16];
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
-				boolean on = random.nextFloat() < 0.55f;
+				boolean on = random.nextFloat() < 0.6f;
 				
 				cells[x][y] = on ? 1 : 0;
 			}
